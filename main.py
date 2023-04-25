@@ -3,9 +3,6 @@
     # LIBRARIES #
     #############
 
-from matplotlib import pyplot as plt
-import numpy as np
-from matplotlib.animation import FuncAnimation
 import time
 
 
@@ -62,6 +59,29 @@ def simpleDichotomy():
 
 # Method to apply the dichotomy algorithm in a recursive way
 def recursiveDichotomyMain():
+    def recursiveDichotomy(a, b, epsilon, n, n_max, x):
+
+        # IF we didn't find the root
+        if abs(b - a) > epsilon and n < n_max:
+
+            # We calculate the value of the middle of the interval
+            x = (a + b) / 2
+            y = f(x)
+
+            # IF the left part does not contain the root
+            if f(a) * y > 0.0:
+                return recursiveDichotomy(x, b, epsilon, n + 1, n_max,
+                                          x)  # We continue the recursive method and move the left bound
+
+            # ELSE IF the right part does not contain the root
+            else:
+                return recursiveDichotomy(a, x, epsilon, n + 1, n_max,
+                                          x)  # We continue the recursive method and move the right bound
+
+        # ELSE, we found the root
+        else:
+            return x, n
+
     epsilon = 1.0E-10  # Determines the precision
     n_max = 200  # Determines the maximum number of iterations
     a, b = 0, 0  # Respectively the left bound and the right bound of the algorithm
@@ -86,32 +106,10 @@ def recursiveDichotomyMain():
     print("Time : " + str(end - beginning))
 
 
-def recursiveDichotomy(a, b, epsilon, n, n_max, x):
-
-    # IF we didn't find the root
-    if abs(b-a)>epsilon and n<n_max:
-
-        # We calculate the value of the middle of the interval
-        x = (a + b) / 2
-        y = f(x)
-
-        # IF the left part does not contain the root
-        if f(a)*y > 0.0:
-            return recursiveDichotomy(x, b, epsilon, n+1, n_max, x) # We continue the recursive method and move the left bound
-
-        # ELSE IF the right part does not contain the root
-        else:
-            return recursiveDichotomy(a, x, epsilon, n+1, n_max, x) # We continue the recursive method and move the right bound
-
-    # ELSE, we found the root
-    else:
-        return x, n
-
 # We define a shortcut to better choose the method to apply
 dichotomy_methods = {
     0: simpleDichotomy,
     1: recursiveDichotomyMain,
-    2: simpleDichotomy
 }
 
 
@@ -136,20 +134,3 @@ while method_choice not in [1, 2, 3]:
 
 # We launch the method that has been chosen by the user
 dichotomy_methods[method_choice-1]()
-
-
-
-"""
-# The user enters the first graphic bounds
-x1_bound, x2_bound = boundsChoice()
-
-# We create the first linear space between th two bounds
-x = np.linspace(x1_bound, x2_bound, 100)
-
-# We calculate the image of each
-y = f(x)
-
-# We create and display the graphic
-plt.plot(x, y)
-plt.show()
-"""
